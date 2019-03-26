@@ -1,0 +1,214 @@
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_primitives.h>
+#include <iostream>
+#include <Windows.h>
+#include "Game.h"
+#define x 20
+#define y 20
+
+//правила:
+//если у клетки 2-3 соседей - она сохраняется. иначе смерть
+//если у любой клетки есть 3 животных рядом - на этой клетке рождается животное
+//0 - пусто
+//1 - есть животное
+//2 - умрет на след ход
+//3 - родится на след ход
+using namespace std;
+
+Game g;
+ALLEGRO_DISPLAY *display = NULL;
+ALLEGRO_DISPLAY_MODE disp_mode;
+const int speed = 100;//in msec per frame
+int timeUntilFinish = 100;
+int **map = new int*[0];
+
+
+
+
+void printMap()
+{
+	
+	al_draw_rectangle(1, 1, (x + 1) * 10, (y + 1) * 10, al_map_rgb(0, 0, 0), 3.0f);
+	al_draw_circle(40, 40, 10, al_map_rgb(255, 0, 255), 1.0f);
+	//при попытке в полноцветность выбирать для клетки преобладающий вокруг цвет
+
+	cout << endl;
+	for (int i = 0; i < x; ++i)
+	{
+		cout << '|';
+		for (int j = 0; j < y; ++j)
+		{
+			if (map[i][j] != 0)
+				cout << map[i][j] << " ";
+			else
+				cout << "  ";
+		}
+		cout << '|';
+		cout << endl;
+	}
+	cout << '.';
+	for (int i = 0; i < x * 2; ++i)
+	{
+
+		cout << '-';
+	}
+	cout << '.';
+	cout << endl;
+}
+
+void init()
+{
+	al_init_primitives_addon();
+
+	map = new int*[y];
+	for (int i = 0; i < x; ++i)
+	{
+		map[i] = new int[y];
+		for (int j = 0; j < y; ++j)
+		{
+			map[i][j] = 0;
+		}
+	}
+	//готовый конфиг:
+	map[5][5] = 1;
+	map[5][6] = 1;
+	map[6][5] = 1;
+	map[6][6] = 1;
+	map[4][5] = 1;
+	//map[7][5] = 1;
+	//map[5][7] = 1;
+	
+	map[2][0] = 1;
+	map[2][1] = 1;
+	map[2][2] = 1;
+	map[1][2] = 1;
+	map[0][1] = 1;//planer
+	//конец конфига
+}
+
+int nCount(int i, int j)
+{
+	int count = 0;
+	
+	if ((map[(x + i + 1) % x][(y + j) % y] == 1) || (map[(x + i + 1) % x][(y + j) % y] == 2))
+		count++;
+	if ((map[(x + i + 1) % x][(y + j + 1) % y] == 1) || (map[(x + i + 1) % x][(y + j + 1) % y] == 2))
+		count++;
+	if ((map[(x + i) % x][(y + j + 1) % y] == 1) || (map[(x + i) % x][(y + j + 1) % y] == 2))
+		count++;
+	if ((map[(x + i - 1) % x][(y + j + 1) % y] == 1) || (map[(x + i - 1) % x][(y + j + 1) % y] == 2))
+		count++;
+	if ((map[(x + i - 1) % x][(y + j) % y] == 1) || (map[(x + i - 1) % x][(y + j) % y] == 2))
+		count++;
+	if ((map[(x + i - 1) % x][(y + j - 1) % y] == 1) || (map[(x + i - 1) % x][(y + j - 1) % y] == 2))
+		count++;
+	if ((map[(x + i) % x][(y + j - 1) % y] == 1) || (map[(x + i) % x][(y + j - 1) % y] == 2))
+		count++;
+	if ((map[(x + i + 1) % x][(y + j - 1) % y] == 1) || (map[(x + i + 1) % x][(y + j - 1) % y] == 2))
+		count++;
+	return count;
+}
+
+void markKill()
+{
+	for (int i = 0; i < x; ++i)
+	{
+		for (int j = 0; j < y; ++j)
+		{
+			
+			if (map[i][j] == 1) {
+				int count = nCount(i, j);
+				if (count < 2 || count > 3)
+					map[i][j] = 2;
+			}
+		}
+
+	}
+}
+void giveBirth()
+{
+	for (int i = 0; i < x; ++i)
+	{
+		for (int j = 0; j < y; ++j)
+		{
+			if (map[i][j] == 0 && nCount(i, j) == 3)
+				map[i][j] = 3;
+		}
+	}
+}
+void applyChanges()
+{
+	for (int i = 0; i < x; ++i)
+	{
+		for (int j = 0; j < y; ++j)
+		{
+			if (map[i][j] == 2)
+				map[i][j] = 0;
+			if (map[i][j] == 3)
+				map[i][j] = 1;
+		}
+	}
+}
+
+void fixedUpdate()
+{
+	timeUntilFinish--;
+
+	//cout << "Time till the end: " << timeUntilFinish << ". Current stage: marking to kill...\n";
+	printMap();
+	Sleep(speed);
+	system("cls");
+	
+	markKill();
+	//cout << "Time till the end: " << timeUntilFinish << ". Current stage: giving birth...\n";
+	//printMap();
+	//Sleep(speed);
+	//system("cls");
+
+	giveBirth();
+	//cout << "Time till the end: " << timeUntilFinish << ". Current stage: killing and engender marked...\n";
+	//printMap();
+	//Sleep(speed);
+	//system("cls");
+
+	applyChanges();
+}
+
+
+void update()
+{
+
+	
+	fixedUpdate();
+	al_flip_display();
+	al_rest(0.5);//потом удалить
+}
+int main()
+{
+	//int pX, pY;
+	//cout << "choose a point(x y) to start Life\n";
+	//cin >> pX >> pY;
+	al_init();
+	al_init_font_addon();
+	al_init_image_addon();
+	al_get_display_mode(4, &disp_mode);
+	//al_get_display_mode(al_get_num_display_modes() - 1, &disp_mode);
+	al_set_new_display_flags(ALLEGRO_RESIZABLE);
+	display = al_create_display(disp_mode.width, disp_mode.height);
+	al_clear_to_color(al_map_rgb(255, 255, 255));
+	//ALLEGRO_FONT* font = al_create_builtin_font();
+	//al_draw_text(font, al_map_rgb(255, 255, 255), 400, 300, ALLEGRO_ALIGN_CENTER, "Kursach");
+	g.init(display);
+	init();
+
+	while (timeUntilFinish > 0) {
+		update();
+		std::cout << "updated. ext is now: " << g.ext << std::endl;
+	}
+	al_destroy_display(display);
+	al_destroy_event_queue(g.event_queue);
+	
+	return 0;
+}
