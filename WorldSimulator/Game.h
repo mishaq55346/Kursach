@@ -20,15 +20,15 @@ private:
 	int x = 10;
 	int y = 10;
 public:
-	ALLEGRO_EVENT ev;
+	ALLEGRO_EVENT event_disp;
+	ALLEGRO_EVENT_QUEUE *disp_queue;
 	ALLEGRO_TIMEOUT timeout;
 	bool get_event;
-	bool ext = false;
+	int ext_code = -1;
 	ALLEGRO_DISPLAY *display = nullptr;
 	ALLEGRO_DISPLAY_MODE disp_modeF;
 	ALLEGRO_DISPLAY_MODE disp_mode;
 	const int speed = 50;//in msec per frame
-	int timeUntilFinish = 200;
 	int **map = new int*[0];
 
 	int scale = 20;
@@ -50,9 +50,10 @@ public:
 
 		display = al_create_display(width, height);
 		al_set_window_position(display, disp_modeF.width / 2 - width / 2, disp_modeF.height / 2 - height / 2);//располагаем по центру экрана
+		disp_queue = al_create_event_queue();
+		al_register_event_source(disp_queue, al_get_display_event_source(display));
 		
 		al_clear_to_color(al_map_rgb(60, 60, 60));
-
 		map = new int*[x];
 		for (int i = 0; i < x; ++i)
 		{
@@ -62,28 +63,10 @@ public:
 				map[i][j] = 0;
 			}
 		}
-
-		//готовый конфиг:
-		//map[5][5] = 1;
-		//map[5][6] = 1;
-		//map[6][5] = 1;
-		//map[6][6] = 1;
-		//map[4][5] = 1;
-		//map[7][5] = 1;
-		//map[5][7] = 1;
-		//map[8][7] = 1;
-
-		map[2][0] = 1;
-		map[2][1] = 1;
-		map[2][2] = 1;
-		map[1][2] = 1;
-		map[0][1] = 1;//planer
-		//конец конфига
 	}
 	int randN(int min, int max)
 	{
 		//TODO сделать в пределах от 50 до 255
-
 		random_device rd;
 		mt19937 mersenne(rd()); // инициализируем Вихрь Мерсенна случайным стартовым числом 
 		return mersenne() ;
@@ -91,39 +74,20 @@ public:
 	void printMap()
 	{
 		al_clear_to_color(al_map_rgb(255, 255, 255));
-		
-		//al_draw_rectangle(0, 0, width,height, al_map_rgb(0, 0, 0), 3.0f);
-		//при попытке в полноцветность выбирать для клетки преобладающий вокруг цвет
-
 		for (int i = 0; i < x; ++i)
 		{
 			for (int j = 0; j < y; ++j)
 			{
 				if (map[i][j] != 0)
-					//al_draw_filled_circle(
-						//x + width / 2 - (x - i * 2) * 20,
-						//y + height / 2 - (y - j * 2) * 20,
-						//(x < y) ? (x - 20 / 10) : (y - 20 / 10),
-						//4,
-						//al_map_rgb(0, 0, 0));
-					
-						al_draw_filled_rectangle(
-							i * (width / x),
-							j * (height / y),
-							(i + 1) * (width / x),
-							(j + 1) * (height / y),
-							//al_map_rgb(0, 0, 0),
-							al_map_rgb(randN(1, 255), randN(1, 255), randN(1, 255))//,
-							//1.0
-						);
+					al_draw_filled_rectangle(
+						i * (width / x),
+						j * (height / y),
+						(i + 1) * (width / x),
+						(j + 1) * (height / y),
+						al_map_rgb(randN(1, 255), randN(1, 255), randN(1, 255))//,
+					);
 			}
 		}
-		//al_draw_text(ALLEGRO_FONT, al_map_rgb(0, 0, 0), 10, 10, 0, "w_sizeX" + std::to_string(width));
-	}
-
-	void handleClick()
-	{
-
 	}
 
 	int nCount(int i, int j)
@@ -193,19 +157,18 @@ public:
 
 	void logic()
 	{
-		//timeUntilFinish--;
 
 		printMap();
-		if(choosing_points)
+		al_init_timeout(&timeout, 0.01);
+		al_wait_for_event_until(disp_queue, &event_disp, &timeout);
+		if (event_disp.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 		{
-			handleClick();
+			ext_code = 1;
 		}
-		else {
-			Sleep(speed);
-			markKill();
-			giveBirth();
-			applyChanges();
-		}
+		Sleep(speed);
+		markKill();
+		giveBirth();
+		applyChanges();
 		al_flip_display();
 	}
 

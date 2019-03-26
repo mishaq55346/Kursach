@@ -107,9 +107,8 @@ public:
 
 		button_start = new RoundButton(width / 2 - 100, height / 2 - 40 + 200, width / 2 + 100, height / 2 + 40 + 200);
 		
-		//TODO спросить о том как это сделать
+		//TODO узнать о том как это сделать
 		//button_x_up->run = [&]() { x += 2; };
-		
 		
 		t_buttons.push_back(*button_x_up);
 		t_buttons.push_back(*button_y_up);
