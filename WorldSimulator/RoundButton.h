@@ -15,8 +15,8 @@ public:
 	}
 	void drawAlternative()
 	{
-		al_draw_filled_rounded_rectangle(x1, y1, x2, y2, 6, 6, al_map_rgb(200, 200, 200));
-		al_draw_filled_rounded_rectangle(x1 + thickness, y1 + thickness, x2 - thickness, y2 - thickness, 4, 4, al_map_rgb(140, 140, 140));
+		al_draw_filled_rounded_rectangle(x1, y1, x2, y2, 6, 6, al_map_rgb(60, 60, 60));
+		al_draw_filled_rounded_rectangle(x1 + thickness, y1 + thickness, x2 - thickness, y2 - thickness, 4, 4, al_map_rgb(255, 255, 255));
 	}
 	bool isClicked(int x, int y) override
 	{

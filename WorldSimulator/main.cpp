@@ -39,15 +39,18 @@ int main()
 	//	return 1;
 
 	//sel.init(menu.x, menu.y);
-	sel.init(20, 20);
+	sel.init(50, 50);
 	while (sel.ext_code == -1) 
 		sel.logic();//«апуск окна выбора клеток
+	
 	sel.exit();
+	if (sel.ext_code == 1)
+		return 2;
 	//game.init(menu.x, menu.y);
 	
-	game.init(20, 20);
+	game.init(sel.x, sel.y);
 	migrate(sel, game);
-	while (game.timeUntilFinish > 0) {
+	while (game.ext_code == -1) {
 		game.logic();//запуск самой игры
 	}
 

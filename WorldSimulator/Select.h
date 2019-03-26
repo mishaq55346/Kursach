@@ -29,6 +29,9 @@ public:
 	ALLEGRO_DISPLAY *display = nullptr;
 	ALLEGRO_DISPLAY_MODE disp_modeF;
 	ALLEGRO_DISPLAY_MODE disp_mode;
+	RoundButton *button;
+	ALLEGRO_FONT *font24;
+
 	const int speed = 50;//in msec per frame
 	int timeUntilFinish = 200;
 	int **map = new int*[0];
@@ -44,13 +47,14 @@ public:
 	int b_corr;
 
 	void init(int x, int y) {
+		font24 = al_load_font("arial.ttf", 24, 0);
 		this->x = x;
 		this->y = y;
 		al_get_display_mode(al_get_num_display_modes() - 1, &disp_modeF);
 		screen_centreX = disp_modeF.width / 2;//980 //центры экрана по осям
 		screen_centreY = disp_modeF.height / 2;//540
 		width = 800;//
-		height = 600;//
+		height = 800;//
 
 		display = al_create_display(width, height);
 		al_set_window_position(display, disp_modeF.width / 2 - width / 2, disp_modeF.height / 2 - height / 2);//располагаем по центру экрана
@@ -60,10 +64,9 @@ public:
 		al_register_event_source(disp_queue, al_get_display_event_source(display));
 		al_register_event_source(mouse_queue, al_get_mouse_event_source());
 
-		al_clear_to_color(al_map_rgb(60, 60, 60));
+		al_clear_to_color(al_map_rgb(255, 0, 0));
 
-		int sq_x = 0;
-		int sq_y = 0;
+		button = new RoundButton(200, 650, 600, 750);
 
 		map = new int*[x];
 		for (int i = 0; i < x; ++i)
@@ -74,30 +77,10 @@ public:
 				map[i][j] = 0;
 			}
 		}
-
-		//готовый конфиг:
-		//map[5][5] = 1;
-		//map[5][6] = 1;
-		//map[6][5] = 1;
-		//map[6][6] = 1;
-		//map[4][5] = 1;
-		//map[7][5] = 1;
-		//map[5][7] = 1;
-		//map[8][7] = 1;
-
-		map[2][0] = 1;
-		map[2][1] = 1;
-		map[2][2] = 1;
-		map[1][2] = 1;
-		map[0][1] = 1;//planer
-		//конец конфига
 	}
 	void printMap()
 	{
 		al_clear_to_color(al_map_rgb(255, 255, 255));
-
-		//al_draw_rectangle(0, 0, width,height, al_map_rgb(0, 0, 0), 3.0f);
-		//при попытке в полноцветность выбирать для клетки преобладающий вокруг цвет
 
 		for (int i = 0; i < x; ++i)
 		{
@@ -106,35 +89,28 @@ public:
 				if (map[i][j] != 0)
 					al_draw_filled_circle(
 						(i + 1.5) * (width / x),
-						(j + 1.5) * (height / y),
+						(j + 1.5) * ((height - 200) / y),
 						//(x < y) ? (x - 20 / 10) : (y - 20 / 10),
 						height / y / 4,
 						al_map_rgb(0, 0, 0));
 
 					al_draw_rectangle(
 						i * (width / x),
-						j * (height / y),
+						j * ((height - 200) / y),
 						(i + 1) * (width / x),
-						(j + 1) * (height / y),
+						(j + 1) * ((height - 200) / y),
 						al_map_rgb(0, 0, 0),
 						1.0
 					);
 			}
 		}
-		//al_draw_text(ALLEGRO_FONT, al_map_rgb(0, 0, 0), 10, 10, 0, "w_sizeX" + std::to_string(width));
+		button->drawAlternative();
+		al_draw_text(font24, al_map_rgb(0, 0, 0), 400, 685, ALLEGRO_ALIGN_CENTER, "Begin simulation");
+		al_draw_line(0, 600, 800, 600, al_map_rgb(0, 0, 0), 6);
 	}
 
-	void handleClick()
-	{
-
-	}
-
-	
-	
 	void logic()
 	{
-		//timeUntilFinish--;
-
 		printMap();
 		al_init_timeout(&timeout, 0.01);
 		al_wait_for_event_until(disp_queue, &event_disp, &timeout);
@@ -160,8 +136,12 @@ public:
 
 	void onClick(int x, int y)
 	{
+		if(button->isClicked(x, y))
+		{
+			ext_code = 0;
+		}
 		int i = ((int)x / (int)(width / Select::x) - 1);
-		int j = ((int)y / (int)(height / Select::y) - 1);
+		int j = ((int)y / (int)((height - 200) / Select::y) - 1);
 		map[i][j] = !map[i][j];
 	}
 
