@@ -165,13 +165,13 @@ public:
 	void onClick(int x, int y)
 	{
 		if (button_x_up->isClicked(x, y))
-			Menu::x++;
+			Menu::x += 2;
 		if (button_y_up->isClicked(x, y))
-			Menu::y++;
+			Menu::y += 2;
 		if (button_x_down->isClicked(x, y) && Menu::x > 1)
-			Menu::x--;
+			Menu::x -= 2;
 		if (button_y_down->isClicked(x, y) && Menu::y > 1)
-			Menu::y--;
+			Menu::y -= 2;
 		if (button_start->isClicked(x, y))
 			startGame();
 		cout << Menu::x << " " << Menu::y << endl;

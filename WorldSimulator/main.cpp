@@ -31,15 +31,15 @@ int main()
 	al_install_keyboard();
 
 
-	//menu.init();
-	//while (menu.ext_code == -1) {
-	//	menu.logic();//запуск менюшки
-	//}
-	//if(menu.ext_code != 0)
-	//	return 1;
+	menu.init();
+	while (menu.ext_code == -1) {
+		menu.logic();//запуск менюшки
+	}
+	if(menu.ext_code != 0)
+		return 1;
 
-	//sel.init(menu.x, menu.y);
-	sel.init(50, 50);
+	sel.init(menu.x, menu.y);
+	//sel.init(50, 50);
 	while (sel.ext_code == -1) 
 		sel.logic();//Запуск окна выбора клеток
 	
