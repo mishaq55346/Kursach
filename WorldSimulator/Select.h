@@ -88,8 +88,8 @@ public:
 			{
 				if (map[i][j] != 0)
 					al_draw_filled_circle(
-						(i + 1.5) * (width / x),
-						(j + 1.5) * ((height - 200) / y),
+						(i + 0.5) * (width / x),
+						(j + 0.5) * ((height - 200) / y),
 						//(x < y) ? (x - 20 / 10) : (y - 20 / 10),
 						height / y / 4,
 						al_map_rgb(0, 0, 0));
@@ -140,9 +140,11 @@ public:
 		{
 			ext_code = 0;
 		}
-		int i = ((int)x / (int)(width / Select::x) - 1);
-		int j = ((int)y / (int)((height - 200) / Select::y) - 1);
-		map[i][j] = !map[i][j];
+		else {
+			int i = ((int)x / (int)(width / Select::x));
+			int j = ((int)y / (int)((height - 200) / Select::y));
+			map[i][j] = !map[i][j];
+		}
 	}
 
 	void exit()

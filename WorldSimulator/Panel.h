@@ -26,9 +26,9 @@ public:
 		}
 		char str[100];
 		strcpy_s(str,  text.c_str());
-		cout << "test1\n";
+
 		al_draw_filled_rectangle(x1, y1, x2, y2, al_map_rgb(255, 255, 255));
+
 		al_draw_text(font18, al_map_rgb(0, 0, 0), (x1 + x2) / 2, (y1 + y2) / 2 - 10, ALLEGRO_ALIGN_CENTER, str);
-		cout << "test2\n";
 	}
 };

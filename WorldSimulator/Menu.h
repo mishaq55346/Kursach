@@ -28,9 +28,7 @@ public:
 
 	ALLEGRO_DISPLAY *display = nullptr;
 	ALLEGRO_DISPLAY_MODE disp_modeF;
-	ALLEGRO_FONT *font36;
 	ALLEGRO_FONT *font24;
-	ALLEGRO_FONT *font18;
 
 	vector<TrButton> t_buttons;
 	RoundButton *button_start;
@@ -56,6 +54,8 @@ public:
 		display = al_create_display(width, height);
 		al_set_window_position(display, disp_modeF.width / 2 - width / 2, disp_modeF.height / 2 - height / 2);//располагаем по центру экрана
 		al_clear_to_color(al_map_rgb(255, 255, 255));
+
+		font24 = al_load_font("arial.ttf", 24, 0);
 
 		disp_queue = al_create_event_queue();
 		mouse_queue = al_create_event_queue();
@@ -123,6 +123,7 @@ public:
 		panel_x->draw(to_string(x));
 		panel_y->draw(to_string(y));
 		button_start->draw();
+		al_draw_text(font24, al_map_rgb(255, 255, 255), button_start->getCentreX(), button_start->getCentreY() - 12, ALLEGRO_ALIGN_CENTER, "Start selecting");
 		al_flip_display();
 	}
 	void logic()
@@ -174,7 +175,6 @@ public:
 			Menu::y -= 2;
 		if (button_start->isClicked(x, y))
 			startGame();
-		cout << Menu::x << " " << Menu::y << endl;
 	}
 
 	
