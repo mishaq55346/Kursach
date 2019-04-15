@@ -3,20 +3,13 @@
 
 class RoundButton : public Button
 {
-	int x1, y1, x2, y2;
 public:
-	RoundButton(int x1, int y1, int x2, int y2) : x1(x1), x2(x2),y1(y1), y2(y2)
+	int x1, y1, x2, y2;
+	RoundButton(int x1, int y1, int x2, int y2) : x1(x1), x2(x2), y1(y1), y2(y2)
 	{
-	};
-	void draw()
-	{
-		al_draw_filled_rounded_rectangle(x1, y1, x2, y2, 6, 6, al_map_rgb(255, 255, 255));
-		al_draw_filled_rounded_rectangle(x1 + thickness, y1 + thickness, x2 - thickness, y2 - thickness, 4, 4, al_map_rgb(60, 60, 60));
 	}
-	void drawAlternative()
+	RoundButton() : x1(0), x2(0), y1(0), y2(0)
 	{
-		al_draw_filled_rounded_rectangle(x1, y1, x2, y2, 6, 6, al_map_rgb(60, 60, 60));
-		al_draw_filled_rounded_rectangle(x1 + thickness, y1 + thickness, x2 - thickness, y2 - thickness, 4, 4, al_map_rgb(255, 255, 255));
 	}
 
 	int getCentreX()
@@ -32,9 +25,6 @@ public:
 	{
 		return x > x1 && x < x2 && y > y1 && y < y2;
 	}
-	bool isHover(int x, int y)
-	{
-		return x > x1 && x < x2 && y > y1 && y < y2;
-	}
+	
 	
 };

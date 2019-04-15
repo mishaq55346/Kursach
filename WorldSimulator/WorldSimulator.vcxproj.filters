@@ -21,6 +21,21 @@
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Select.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Start.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -32,9 +47,6 @@
     <ClInclude Include="RoundButton.h">
       <Filter>Файлы заголовков\Buttons</Filter>
     </ClInclude>
-    <ClInclude Include="TrButton.h">
-      <Filter>Файлы заголовков\Buttons</Filter>
-    </ClInclude>
     <ClInclude Include="Panel.h">
       <Filter>Файлы заголовков\Buttons</Filter>
     </ClInclude>
@@ -42,6 +54,12 @@
       <Filter>Файлы заголовков\Buttons</Filter>
     </ClInclude>
     <ClInclude Include="Select.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Start.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -52,5 +70,19 @@
     <Font Include="arial.ttf">
       <Filter>Файлы ресурсов</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="start.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="menu.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="select.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="game.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>
