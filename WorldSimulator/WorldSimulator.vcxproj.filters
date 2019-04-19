@@ -33,7 +33,7 @@
     <ClCompile Include="Start.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
+    <ClCompile Include="AliveTile.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,7 +59,7 @@
     <ClInclude Include="Start.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
+    <ClInclude Include="AliveTile.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -82,6 +82,9 @@
       <Filter>Файлы ресурсов</Filter>
     </Image>
     <Image Include="game.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="logo.png">
       <Filter>Файлы ресурсов</Filter>
     </Image>
   </ItemGroup>

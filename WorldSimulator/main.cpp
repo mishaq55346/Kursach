@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Select.h"
 #include "Start.h"
+#include "AliveTile.h"
 #include <allegro5/allegro_ttf.h>
 
 #include <vld.h>
@@ -17,18 +18,18 @@
 
 
 //TODO сделать проверку на стабильное состояние
+//TODO сделать стирание высоты и ширины на 20 при смене экрана
 
-//TODO сделать еще одно окно с инструкцией
-//TODO в инструкции нарисовать устойчивые фигуры
+//TODO ---сделать еще одно окно с инструкцией
+//TODO ---в инструкции нарисовать устойчивые фигуры
 
-//TODO перевести все на рельсы классов(обрабатывать только живые клетки: каждую клетку представить в виде объекта)
-//TODO исправить задержку в классе Game
-//TODO сделать цвета по генам
+//TODO ---перевести все на рельсы классов(обрабатывать только живые клетки: каждую клетку представить в виде объекта)
+//TODO ---сделать цвета по генам
+//TODO добавить shared_ptr на все объекты-ссылки
 
 using namespace std;
 
-void migrate(Select sel, Game game);
-char toUpper(char ch);
+void migrate(Select sel, Game *game);
 
 enum GameState { S_Start, S_Menu, S_Select, S_Game, S_Finish };
 GameState State;
@@ -50,7 +51,7 @@ int main()
 	al_install_mouse();
 	al_install_keyboard();
 
-	State = S_Menu;
+	State = S_Select;
 
 	//ext_code?
 	//-1 - continue process
@@ -105,7 +106,7 @@ int main()
 		case (S_Game):
 		{
 			game.init(sel.x, sel.y);
-			migrate(sel, game);
+			migrate(sel, &game);
 			while (game.ext_code == -1)
 				game.logic();
 			if (game.ext_code == 1)
@@ -124,20 +125,15 @@ int main()
 
 }
 
-void migrate(Select sel, Game game)
+void migrate(Select sel, Game *game)
 {
+	game->tiles.clear();
 	for (int i = 0; i < sel.x; ++i)
 	{
 		for (int j = 0; j < sel.y; ++j)
 		{
-			game.map[i][j] = sel.map[i][j];
+			if (sel.map[i][j] == 1)
+				game->tiles.emplace_back(i, j);
 		}
 	}
-}
-
-char toUpper(char ch)
-{
-	if (ch >= 'a'&&ch <= 'z')
-		return (char)(ch - 32);
-	return ch;
 }

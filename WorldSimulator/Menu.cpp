@@ -112,10 +112,10 @@ void Menu::onClick(int x, int y)
 		event.type = 0;
 	}
 	if (button_continue->isClicked(x, y)) {
-		if ((this->x / (float)this->y) >= 3 || (this->y / (float)this->x) >= 3)
+		if ((this->x / (float)this->y) >= 2 || (this->y / (float)this->x) >= 2)
 		{
 			al_show_native_message_box(al_get_current_display(), "Error", "Unproportional size of the field",
-				"One side of the field can't be bigger of the other at 3 or more times", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+				"One side of the field can't be bigger of the other at 2 or more times", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 			mouse_up = true;
 		}
 		else if (this->x > 2 && this->y > 2 && this->x < 100 && this->y < 100) {
