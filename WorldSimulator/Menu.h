@@ -13,14 +13,6 @@ class Menu
 	
 public:
 
-	
-	ALLEGRO_DISPLAY *display = nullptr;
-	ALLEGRO_DISPLAY_MODE disp_modeF;
-
-	ALLEGRO_EVENT_QUEUE *event_queue;
-	ALLEGRO_EVENT event;
-	ALLEGRO_TIMEOUT timeout;
-
 	ALLEGRO_BITMAP *image;
 	RoundButton *button_continue;
 	RoundButton *button_back;
@@ -28,7 +20,6 @@ public:
 	Panel*panel_y;
 	int width = 1000;
 	int height = 600;
-	bool get_event;
 	int ext_code = -1;
 	bool mouse_up = true;
 	int x = 20;
@@ -36,10 +27,11 @@ public:
 
 	void init();
 	void draw();
-	void logic();
+	void logic(ALLEGRO_EVENT ev);
 
 	void onExit();
+	void onClick(int x, int y, ALLEGRO_EVENT ev);
 
-	void onClick(int x, int y);
+	
 };
 

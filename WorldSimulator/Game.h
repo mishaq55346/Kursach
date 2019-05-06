@@ -6,7 +6,7 @@
 #include "Menu.h"
 #include <thread>
 #include "random"
-#include "AliveTile.h"
+#include "Tile.h"
 
 using namespace std;
 
@@ -14,7 +14,7 @@ class Point
 {
 public:
 	int x = 0, y = 0;
-
+	Point(int x, int y) : x(x), y(y){}
 };
 
 class Game
@@ -36,34 +36,45 @@ public:
 	RoundButton button_main_menu;
 	RoundButton button_back;
 
-	ALLEGRO_EVENT event;
-	ALLEGRO_EVENT_QUEUE *event_queue;
-	ALLEGRO_TIMER *timer;
 	float FPS = 5.0;
 	bool redraw = true;
 	int ext_code = -1;
 	
 	const int speed = 100;//in msec per frame
-	int **map = new int*[0];
-	vector<AliveTile> tiles = {};
+	vector<Tile> tiles = {};
 	bool mouse_up;
 
 	void init(int x, int y);
 	static int randN();
 	void draw();
 
-	int nCount(int i, int j);
-	int Count(AliveTile tile);
-	vector<Point> getNeighbours(int x, int y);
-	vector<Point> getNeighbours(AliveTile tile);
-	int Count(int x, int y);
+	vector<Point> getPNeighbours(int x, int y);
+	int getTNeighboursCount(int x, int y);
+	vector<Tile> getTNeighbours(int x, int y);
 
-	void logic();
-	
-	void onClick(int x, int y);
+	void logic(ALLEGRO_EVENT ev);
+	void findAnomalies();
+
+	void onClick(int x, int y, ALLEGRO_EVENT ev);
 	void markKill();
 	void giveBirth();
-	void applyChanges() const;
+	void applyChanges();
+	ALLEGRO_COLOR getDominateColor(int x, int y);
+
+
+	void print(vector<Point> points)
+	{
+		for (auto p : points)
+			cout << p.x << "---" << p.y << endl;
+		cout << "---------------\n";
+	}
+	void print(vector<Tile> tiles)
+	{
+		cout << "---------------\n";
+		for (auto t : tiles)
+			t.print();
+		cout << "======\n";
+	}
 
 	void onExit();
 };

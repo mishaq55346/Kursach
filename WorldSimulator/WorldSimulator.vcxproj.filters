@@ -33,7 +33,7 @@
     <ClCompile Include="Start.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="AliveTile.cpp">
+    <ClCompile Include="Tile.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,7 +59,7 @@
     <ClInclude Include="Start.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="AliveTile.h">
+    <ClInclude Include="Tile.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
