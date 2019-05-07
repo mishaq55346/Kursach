@@ -23,11 +23,7 @@ private:
 	int x = 10;
 	int y = 10;
 public:
-	ALLEGRO_DISPLAY *display = nullptr;
-	ALLEGRO_DISPLAY_MODE disp_modeF;
-	ALLEGRO_DISPLAY_MODE disp_mode;
-	int screen_centreX;
-	int screen_centreY;
+	
 	const int width = 1000;
 	const int height = 600;
 

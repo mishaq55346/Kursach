@@ -16,7 +16,7 @@ void Menu::init() {
 }
 void Menu::draw()
 {
-	al_clear_to_color(al_map_rgb(255, 0, 0));
+	//al_clear_to_color(al_map_rgb(255, 0, 0));
 	al_draw_bitmap(image, 0, 0, 0);
 	panel_x->draw(panel_x->text);
 	panel_y->draw(panel_y->text);
@@ -84,7 +84,7 @@ void Menu::onExit()
 	al_destroy_font(panel_x->font18);
 	al_destroy_font(panel_y->font18);
 	al_destroy_bitmap(image);
-	al_clear_to_color(al_map_rgb(255, 0, 0));
+	//al_clear_to_color(al_map_rgb(255, 0, 0));
 	al_flip_display();
 }
 

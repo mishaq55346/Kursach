@@ -9,7 +9,7 @@ void Select::init(int x, int y) {
 	
 	image = al_load_bitmap("select.png");
 
-	al_clear_to_color(al_map_rgb(255, 0, 0));
+	//al_clear_to_color(al_map_rgb(255, 0, 0));
 
 	button_back = new RoundButton(95, 520, 405, 580);
 	button_continue = new RoundButton(595, 520, 905, 580);
@@ -27,7 +27,7 @@ void Select::init(int x, int y) {
 }
 void Select::draw()
 {
-	al_clear_to_color(al_map_rgb(255, 0, 0));
+	//al_clear_to_color(al_map_rgb(255, 0, 0));
 
 	al_draw_bitmap(image, 0, 0, 0);
 
@@ -99,5 +99,5 @@ void Select::onExit()
 {
 	ext_code = -1;
 	al_destroy_bitmap(image);
-	al_clear_to_color(al_map_rgb(255, 0, 0));
+	//al_clear_to_color(al_map_rgb(255, 0, 0));
 }

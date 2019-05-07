@@ -8,13 +8,13 @@ void Start::init() {
 	
 	button_start = new RoundButton(298, 517, 700, 581);
 
-	al_clear_to_color(al_map_rgb(255, 0, 0));
+	//al_clear_to_color(al_map_rgb(255, 0, 0));
 	draw();
 	al_flip_display();
 }
 void Start::draw()
 {
-	al_clear_to_color(al_map_rgb(255, 255, 255));
+	//al_clear_to_color(al_map_rgb(255, 255, 255));
 	al_draw_bitmap(image, 0, 0, 0);
 }
 
@@ -54,6 +54,6 @@ void Start::onExit()
 	button_start = nullptr;
 	al_destroy_bitmap(image);
 	al_destroy_font(font24);
-	al_clear_to_color(al_map_rgb(255, 0, 0));
+	//al_clear_to_color(al_map_rgb(255, 0, 0));
 	al_flip_display();
 }

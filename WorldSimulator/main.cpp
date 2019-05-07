@@ -90,25 +90,15 @@ int main()
 	al_set_window_position(display, disp_modeF.width / 2 - width / 2, disp_modeF.height / 2 - height / 2);//располагаем по центру экрана
 
 	queue = al_create_event_queue();
-	timer = al_create_timer(1.0 / FPS);
+	timer = al_create_timer(1.0 );
 
 	al_register_event_source(queue, al_get_display_event_source(display));
 	al_register_event_source(queue, al_get_mouse_event_source());
 	al_register_event_source(queue, al_get_keyboard_event_source());
-	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+	al_register_event_source(queue, al_get_timer_event_source(timer));
 
 	al_init_timeout(&timeout, 0.1);
 	al_start_timer(timer);
-
-	display = al_create_display(width, height);
-	al_set_window_position(display, disp_modeF.width / 2 - width / 2, disp_modeF.height / 2 - height / 2);//располагаем по центру экрана
-
-	
-	
-
-	
-	
-	
 	
 	
 
@@ -196,6 +186,7 @@ int main()
 		default:;
 		}
 	}
+	al_destroy_display(display);
 	al_uninstall_mouse();
 	al_uninstall_keyboard();
 	return 0;

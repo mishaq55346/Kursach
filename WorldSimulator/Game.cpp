@@ -10,7 +10,7 @@ void Game::init(int x, int y) {
 	button_back = RoundButton(95, 520, 405, 580);
 	button_main_menu = RoundButton(595, 520, 905, 580);
 
-	al_clear_to_color(al_map_rgb(0, 255, 0));
+	//al_clear_to_color(al_map_rgb(0, 255, 0));
 
 
 }
@@ -23,7 +23,7 @@ int Game::randN()
 }
 
 void Game::draw() {
-	al_clear_to_color(al_map_rgb(255, 0, 0));
+	//al_clear_to_color(al_map_rgb(255, 0, 0));
 	al_draw_bitmap(image, 0, 0, 0);
 	for (auto tile : tiles)
 	{
@@ -96,6 +96,7 @@ vector<Tile> Game::getTNeighbours(int x, int y) {//функция обратная поиску выше:
 
 void Game::logic(ALLEGRO_EVENT ev) {
 	draw();
+	cout << ev.type << endl;
 	if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 	{
 		ext_code = 1;
@@ -206,6 +207,6 @@ void Game::onExit()
 	ext_code = -1;
 	tiles.clear();
 	al_destroy_bitmap(image);
-	al_clear_to_color(al_map_rgb(0, 255, 0));
+	//al_clear_to_color(al_map_rgb(0, 255, 0));
 	al_flip_display();
 }
