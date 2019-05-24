@@ -8,7 +8,7 @@ class Tile
 {
 public:
 	int x = 0, y = 0;
-	ALLEGRO_COLOR color = al_map_rgb(255, 255, 255);
+	ALLEGRO_COLOR color = al_map_rgb(0, 0, 125);
 
 	enum TileState { T_Dyeing, T_Born, T_Live };
 	TileState State = T_Live;
@@ -16,13 +16,14 @@ public:
 	Tile(){}
 	Tile(int x, int y) : x(x), y(y)
 	{
-		color = al_map_rgb(randN(), randN(), randN());
 	}
 	Tile(int x, int y, TileState state) : x(x), y(y), State(state)
 	{
-		color = al_map_rgb(randN(), randN(), randN());
 	}
-	Tile(int x, int y, ALLEGRO_COLOR color) : x(x), y(y), color(color){}
+	Tile(int x, int y, ALLEGRO_COLOR color) : x(x), y(y), color(color)
+	{
+		this->color = color;
+	}
 	Tile(int x, int y, TileState state, ALLEGRO_COLOR color) : x(x), y(y), State(state), color(color){}
 	
 	void print() const
@@ -31,15 +32,16 @@ public:
 		switch (State)
 		{
 		case T_Live:
-			std::cout << "live" << std::endl;
+			std::cout << "live, ";
 			break;
 		case T_Born:
-			std::cout << "just born" << std::endl;
+			std::cout << "just born, ";
 			break;
 		case T_Dyeing:
-			std::cout << "dyeing" << std::endl;
+			std::cout << "dyeing, ";
 			break;
 		}
+		std::cout << "color is " << color.r * 255 << " " << color.g * 255 << " " << color.b * 255 << std::endl;
 	}
 	bool operator==(Tile tile) const
 	{  

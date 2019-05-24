@@ -3,10 +3,14 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_audio.h>
 #include "Menu.h"
 #include <thread>
 #include "random"
 #include "Tile.h"
+#include <queue>
+#include <list>
 
 using namespace std;
 
@@ -23,20 +27,25 @@ private:
 	int x = 10;
 	int y = 10;
 public:
-	
+
+	ALLEGRO_COLOR colors[7];
+
 	const int width = 1000;
 	const int height = 600;
 
+	
 	ALLEGRO_BITMAP *image;
 	ALLEGRO_BITMAP *logo;
 	RoundButton button_main_menu;
 	RoundButton button_back;
 
-	float FPS = 5.0;
-	bool redraw = true;
+
+	list<vector<Tile>> previousStates;
+	bool stable = false;
+	bool relogic = true;
 	int ext_code = -1;
 	
-	const int speed = 100;//in msec per frame
+	const int speed = 50;//in msec per frame
 	vector<Tile> tiles = {};
 	bool mouse_up;
 
@@ -49,28 +58,12 @@ public:
 	vector<Tile> getTNeighbours(int x, int y);
 
 	void logic(ALLEGRO_EVENT ev);
-	void findAnomalies();
 
 	void onClick(int x, int y, ALLEGRO_EVENT ev);
 	void markKill();
 	void giveBirth();
 	void applyChanges();
 	ALLEGRO_COLOR getDominateColor(int x, int y);
-
-
-	void print(vector<Point> points)
-	{
-		for (auto p : points)
-			cout << p.x << "---" << p.y << endl;
-		cout << "---------------\n";
-	}
-	void print(vector<Tile> tiles)
-	{
-		cout << "---------------\n";
-		for (auto t : tiles)
-			t.print();
-		cout << "======\n";
-	}
 
 	void onExit();
 };

@@ -5,13 +5,15 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_native_dialog.h>
 #include <iostream>
 #include <Windows.h>
 #include "RoundButton.h"
 #include <string>
-//#include <random>
 #include "random"
 #include "Panel.h"
+#include "Tile.h"
 
 using namespace std;
 
@@ -20,17 +22,16 @@ class Select
 public:
 	int x = 10;
 	int y = 10;
-	
+	vector<Tile> tiles;
 
 	ALLEGRO_BITMAP *image;
 
+	ALLEGRO_SAMPLE *audio_single;
 	RoundButton *button_continue;
 	RoundButton *button_back;
 	Panel *panel_x;
 	Panel *panel_y;
 	const int speed = 50;//in msec per frame
-	int **map = new int*[0];
-	//shared_ptr<int*> p1_ptr(Select::map);
 
 	int scale = 20;
 

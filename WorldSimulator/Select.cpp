@@ -1,5 +1,6 @@
 #include "Select.h"
-#include <allegro5/allegro_native_dialog.h>
+#include "Tile.h"
+
 
 void Select::init(int x, int y) {
 	mouse_up = true;
@@ -9,40 +10,26 @@ void Select::init(int x, int y) {
 	
 	image = al_load_bitmap("select.png");
 
-	//al_clear_to_color(al_map_rgb(255, 0, 0));
-
 	button_back = new RoundButton(95, 520, 405, 580);
 	button_continue = new RoundButton(595, 520, 905, 580);
 	
-	map = new int*[x];
-	for (int i = 0; i < x; ++i)
-	{
-		map[i] = new int[y];
-		for (int j = 0; j < y; ++j)
-		{
-			map[i][j] = 0;
-		}
-	}
 	draw();
 }
 void Select::draw()
 {
-	//al_clear_to_color(al_map_rgb(255, 0, 0));
-
 	al_draw_bitmap(image, 0, 0, 0);
-
-	for (int i = 0; i < x; ++i)
-	{
-		for (int j = 0; j < y; ++j)
+		for (const auto tile : tiles)
 		{
-			if (map[i][j] != 0)
-				al_draw_filled_circle(
-					28 + (i + 0.5) * ((width - 27 - 28) / (float)x),
-					 97 + (j + 0.5) * ((height - 110 - 97) / (float)y),
-					//(y > x) ? ((height + 97 - 110) / (float)y / 4) : ((width + 27 - 28) / (float)x / 4),
-					4,
-					al_map_rgba(70, 70, 70, 0));
-
+			al_draw_filled_circle(
+				
+				28 + (tile.x + 0.5) * ((width - 27 - 28) / float(x)),
+				97 + (tile.y + 0.5) * ((height - 110 - 97) / float(y)),
+				4,
+				al_map_rgba(70, 70, 70, 0)
+			);
+		}
+	for (int i = 0; i < x; ++i)
+		for (int j = 0; j < y; ++j)
 			al_draw_rectangle(
 				28 + i * ((width - 27 - 28) / (float)x),
 				97 + j * ((height - 110 - 97) / (float)y),
@@ -51,16 +38,11 @@ void Select::draw()
 				al_map_rgba(70, 70, 70,0),
 				1.0
 			);
-		}
-	}
-	
 	al_flip_display();
 }
 
 void Select::logic(ALLEGRO_EVENT ev)
 {
-	
-	
 	if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 	{
 		ext_code = 1;
@@ -82,22 +64,29 @@ void Select::onClick(int x, int y, ALLEGRO_EVENT ev)
 	{
 		ext_code = 2;
 	}
-	if (button_back->isClicked(x, y))
+	else if (button_back->isClicked(x, y))
 	{
 		ext_code = 3;
 	}
 	else {
 		int i = (x - 28) / ((width - 27 - 28) / (float)Select::x);
 		int j = (y - 97) / ((height - 110 - 97) / (float)Select::y);
-		map[i][j] = !map[i][j];
+		if (find(tiles.begin(), tiles.end(), Tile(i, j, Tile::T_Live)) != tiles.end())
+			tiles.erase(find(tiles.begin(), tiles.end(), Tile(i, j, Tile::T_Live)));
+		else 
+			tiles.emplace_back(i, j, Tile::T_Live);
+		
 	}
 	ev.type = 0;
 	draw();
 }
+
+
 
 void Select::onExit()
 {
 	ext_code = -1;
 	al_destroy_bitmap(image);
 	//al_clear_to_color(al_map_rgb(255, 0, 0));
+	al_destroy_sample(audio_single);
 }

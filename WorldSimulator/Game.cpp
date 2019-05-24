@@ -5,33 +5,38 @@ void Game::init(int x, int y) {
 	this->x = x;
 	this->y = y;
 
+	colors[0] = al_map_rgb(255, 0, 0);//red
+	colors[1] = al_map_rgb(0, 255, 0);//green
+	colors[2] = al_map_rgb(0, 0, 255);//blue
+	colors[3] = al_map_rgb(0, 255, 255);//aqua
+	colors[4] = al_map_rgb(255, 0, 255);//fuchsia
+	colors[5] = al_map_rgb(255, 255, 0);//yellow
+	colors[6] = al_map_rgb(255, 255, 255);//white
+
 	image = al_load_bitmap("game.png");
 
 	button_back = RoundButton(95, 520, 405, 580);
 	button_main_menu = RoundButton(595, 520, 905, 580);
 
-	//al_clear_to_color(al_map_rgb(0, 255, 0));
-
-
+	stable = false;
 }
 
 int Game::randN()
 {
 	random_device rd;
 	mt19937 mersenne(rd()); // инициализируем Вихрь Мерсенна случайным стартовым числом 
-	return mersenne();
+	return (mersenne());
 }
 
 void Game::draw() {
-	//al_clear_to_color(al_map_rgb(255, 0, 0));
 	al_draw_bitmap(image, 0, 0, 0);
-	for (auto tile : tiles)
+	for (const auto tile : tiles)
 	{
 		al_draw_filled_rectangle(
-			28 + tile.x * ((width - 27 - 28) / (float)x),
-			97 + tile.y * ((height - 110 - 97) / (float)y),
-			28 + (tile.x + 1) * ((width - 27 - 28) / (float)x),
-			97 + (tile.y + 1) * ((height - 110 - 97) / (float)y),
+			28 + tile.x * ((width - 27 - 28) / float(x)),//28 и 97 - поправки для края экрана
+			97 + tile.y * ((height - 110 - 97) / float(y)),
+			28 + (tile.x + 1) * ((width - 27 - 28) / float(x)),
+			97 + (tile.y + 1) * ((height - 110 - 97) / float(y)),
 			tile.color//
 		);
 	}
@@ -58,14 +63,12 @@ vector<Point> Game::getPNeighbours(int x, int y) {//функция поиска "мертвых" окр
 }
 
 int Game::getTNeighboursCount(int x, int y) {//функция обратная поиску выше: поиск "живых" тайлов в радиусе 1 клетки и возврат их количества
-	//находит кол-во тайлов-соседов
 	int count = 0;
-	for (auto tile : tiles) {
+	for (const auto tile : tiles) {
 		if (x == tile.x && y == tile.y)
 			continue;
-		int distance_x = min(abs(tile.x - x) % this->x, abs(this->x - (abs(tile.x - x) % this->x)));
-		int distance_y = min(abs(tile.y - y) % this->y, abs(this->y - (abs(tile.y - y) % this->y)));
-		//cout << x << " " << y << " tile: distance from (" << tile.x << ", " << tile.y << ") tile = (" <<  distance_x << ", " << distance_y << ")" << endl;
+		const int distance_x = min(abs(tile.x - x) % this->x, abs(this->x - (abs(tile.x - x) % this->x)));
+		const int distance_y = min(abs(tile.y - y) % this->y, abs(this->y - (abs(tile.y - y) % this->y)));
 		if (
 			(distance_x == 1 || distance_x == 0) && (distance_y == 1 || distance_y == 0)
 			)
@@ -75,7 +78,6 @@ int Game::getTNeighboursCount(int x, int y) {//функция обратная поиску выше: пои
 }
 
 vector<Tile> Game::getTNeighbours(int x, int y) {//функция обратная поиску выше: поиск "живых" тайлов в радиусе 1 клетки и возврат их количества
-	//находит кол-во тайлов-соседов
 	vector<Tile> temp;
 	for (auto tile : tiles) {
 		if (x == tile.x && y == tile.y)
@@ -88,49 +90,60 @@ vector<Tile> Game::getTNeighbours(int x, int y) {//функция обратная поиску выше:
 			)
 			temp.emplace_back(
 			(this->x + tile.x) % this->x,
-				(this->y + tile.y) % this->y
+				(this->y + tile.y) % this->y,
+				tile.color
 			);
 	}
 	return temp;
 }
 
 void Game::logic(ALLEGRO_EVENT ev) {
-	draw();
-	cout << ev.type << endl;
-	if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+	if(!stable)
+		draw();//отрисовываем поле
+	if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)//если закрываем окно, выходим с кодом 1
 	{
 		ext_code = 1;
 	}
-	if (mouse_up && ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+	if (mouse_up && ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)//если мышь была поднята и опустилась - фиксируем клик
 	{
-		mouse_up = false;
+		mouse_up = false;//предотвращаем повторное срабатывание клика
 		int x = ev.mouse.x;
-		int y = ev.mouse.y;
-		onClick(x, y, ev);
-		mouse_up = false;
+		int y = ev.mouse.y;//заносим координаты клика
+		onClick(x, y, ev);//обрабатываем клик
 	}
-	if (!mouse_up && ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
+	if (!mouse_up && ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)//если мышь была опущена и поднялась - фиксируем поднятие мыши
 		mouse_up = true;
-	if (redraw) {
-		redraw = false;
-		markKill();
-		giveBirth();
-		applyChanges();
-		//findAnomalies();
-		//здесь апдейт игры
+	if (!stable && relogic) {//если надо отрисовать новый ход - обрабатываем логику
+		relogic = false;
+		previousStates.push_back(tiles);
+		if (previousStates.size() >= 4)
+			previousStates.pop_front();
+		markKill();//помечаем клетки, что нужно "убить"
+		giveBirth();//помечаем клетки, что скоро родятся
+		applyChanges();//подтверждаем изменения клеток - убитых уничтожаем, родившихся утверждаем
+
+		list<vector<Tile>>::iterator it;
+		int period = 0;
+		for (it = previousStates.begin(); it != previousStates.end(); ++it) {
+			period++;
+			if (*it == tiles)
+			{
+				al_show_native_message_box(
+					al_get_current_display(),
+					"WOW",
+					"Stable state found",
+					("That the end my friend, try another configuration, period is " + to_string(previousStates.size() - period + 1)).c_str(),
+					nullptr, 
+					ALLEGRO_MESSAGEBOX_WARN
+				);
+				stable = true;
+				ev.type = 0;
+			}
+		}
 	}
 	if (ev.type == ALLEGRO_EVENT_TIMER)
-		redraw = true;
-}
-
-void Game::findAnomalies()
-{
-	for (auto t : tiles)
-		if (count(tiles.begin(), tiles.end(), t) > 1) {
-			cerr << "found anomaly on tile: ";
-			t.print();
-			cerr << "found 2 or more tiles of one type in vector." << endl;
-		}
+		relogic = true;//по тику таймера обновляем картинку
+	ev.type = 0;//обновляем тип ивента
 }
 
 void Game::onClick(int x, int y, ALLEGRO_EVENT ev)
@@ -138,16 +151,14 @@ void Game::onClick(int x, int y, ALLEGRO_EVENT ev)
 	if (button_back.isClicked(x, y))
 	{
 		ext_code = 3;
-		ev.type = 0;// нужно для багфикса двойного клика
 	}
 	else if (button_main_menu.isClicked(x, y))
 	{
 		ext_code = 4;
-		ev.type = 0;// нужно для багфикса двойного клика
 	}
-	//al_show_native_message_box(display, "", "", ("(" + to_string(x) + ";" + to_string(y) + ")").c_str(), NULL, 0);
 }
 
+//"Сердце программы" - все операции с клетками, проводимые каждый ход
 void Game::markKill()
 {
 	for (auto &tile : tiles) {
@@ -182,31 +193,66 @@ void Game::applyChanges()
 	temp.clear();
 }
 
+//функции сравнения 2х цветов
+bool operator==(const ALLEGRO_COLOR& left, const ALLEGRO_COLOR& right)
+{
+	return(left.r == right.r && left.g == right.g && left.b == right.b);
+}
+bool operator!=(const ALLEGRO_COLOR& left, const ALLEGRO_COLOR& right)
+{
+	return(left.r != right.r || left.g != right.g || left.b != right.b);
+}
+
+//функция поиска индекса максимального элемента в массиве чисел размера size
+int indexOfMax(int *mas, int size)
+{
+	int max_i = 0;
+	for (int i = 1; i < size; ++i)
+	{
+		if (mas[i] > mas[max_i])
+			max_i = i;
+	}
+	return max_i;
+}
+
 ALLEGRO_COLOR Game::getDominateColor(int x, int y)
 {
-	vector<Tile> temp = getTNeighbours(x, y);
-
-	if (temp.empty()) {
-		return al_map_rgb(randN(), randN(), randN());
-	}
-	float r = 0;
-	float g = 0;
-	float b = 0;
-	int size = temp.size();
-	for (auto tile : temp)
+	int c[7]{ 0,0,0,0,0,0,0 };//количество каждого цвета вокруг текущей клетки
+	vector<Tile> neighbours = getTNeighbours(x, y);//находим всех соседей
+	if(neighbours.empty())//если вокруг никого нет - ставим клетке рандомный цвет
 	{
-		r += tile.color.r / size;
-		g += tile.color.g / size;
-		b += tile.color.b / size;
+		const int rand = abs(randN() % 7);//берем рандомное положительное число не превышающее размер массива цветов
+		return colors[rand];//возвращаем рандомный элемент массива цветов
 	}
-	return al_map_rgb(r * 255.0, g * 255.0, b * 255.0);
+	//если вокруг клетки есть соседи
+	for(auto tile : neighbours)//проходим по каждому соседу
+	{
+		if (tile.color == colors[0])//сравниваем цвет соседа с цветом из массива цветов
+			c[0]++;//если такой есть, увеличиваем 0й элемент массива интов на 1
+		else if (tile.color == colors[1])
+			c[1]++;
+		else if (tile.color == colors[2])
+			c[2]++;
+		else if (tile.color == colors[3])
+			c[3]++;
+		else if (tile.color == colors[4])
+			c[4]++;
+		else if (tile.color == colors[5])
+			c[5]++;
+		else if (tile.color == colors[6])
+			c[6]++;
+	}
+
+	const int maxColor = indexOfMax(c, 7);//смотрим, какого цвета в округе больше
+	return colors[maxColor];//возвращаем доминирующий цвет
 }
+
 
 void Game::onExit()
 {
 	ext_code = -1;
 	tiles.clear();
-	al_destroy_bitmap(image);
-	//al_clear_to_color(al_map_rgb(0, 255, 0));
-	al_flip_display();
+	if(image != nullptr)
+		al_destroy_bitmap(image);
+	
 }

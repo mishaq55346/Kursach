@@ -13,10 +13,12 @@ public:
 	string text = "20";
 	bool enabled = false;
 	ALLEGRO_FONT *font18;
-	Panel(int x1, int y1, int x2, int y2) : x1(x1), y1(y1), x2(x2), y2(y2)
+	Panel(int x1, int y1, int x2, int y2) : x1(x1), y1(y1), x2(x2), y2(y2), font18(nullptr)
 	{
+		al_destroy_font(font18);
 		font18 = al_load_font("arial.ttf", 18, 0);
 	}
+
 	void draw(string text)
 	{
 		if (this->text != text)
