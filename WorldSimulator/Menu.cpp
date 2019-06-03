@@ -10,8 +10,8 @@ void Menu::init() {
 	button_back = new RoundButton(95, 520, 406, 580);
 	button_continue = new RoundButton(594, 520, 905, 580);
 
-	x = 20;
-	y = 20;
+	x = 40;
+	y = 40;
 
 }
 void Menu::draw()

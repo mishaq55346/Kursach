@@ -10,7 +10,7 @@ class Panel
 {
 	int x1, y1, x2, y2;
 public:
-	string text = "20";
+	string text = "40";
 	bool enabled = false;
 	ALLEGRO_FONT *font18;
 	Panel(int x1, int y1, int x2, int y2) : x1(x1), y1(y1), x2(x2), y2(y2), font18(nullptr)

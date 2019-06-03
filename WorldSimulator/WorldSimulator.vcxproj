@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Presets.h" />
     <ClInclude Include="Start.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Panel.h" />
@@ -175,6 +176,10 @@
     <Image Include="menu.png" />
     <Image Include="select.png" />
     <Image Include="start.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="full.wav" />
+    <Media Include="single.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

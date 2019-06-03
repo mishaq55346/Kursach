@@ -1,12 +1,12 @@
 #pragma once
 
 #include <allegro5/allegro.h>
-#include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_native_dialog.h>
+#include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_audio.h>
 #include <iostream>
 #include <Windows.h>
 #include "RoundButton.h"
@@ -26,7 +26,7 @@ public:
 
 	ALLEGRO_BITMAP *image;
 
-	ALLEGRO_SAMPLE *audio_single;
+	ALLEGRO_SAMPLE *audio_single = NULL;
 	RoundButton *button_continue;
 	RoundButton *button_back;
 	Panel *panel_x;

@@ -1,17 +1,24 @@
 #include "Select.h"
 #include "Tile.h"
-
+#include "Presets.h"
 
 void Select::init(int x, int y) {
 	mouse_up = true;
 
 	this->x = x;
 	this->y = y;
-	
-	image = al_load_bitmap("select.png");
 
+	image = al_load_bitmap("select.png");
+	
+	al_reserve_samples(5);
+	audio_single = al_load_sample("single.wav");
 	button_back = new RoundButton(95, 520, 405, 580);
 	button_continue = new RoundButton(595, 520, 905, 580);
+
+	if (!audio_single) {
+		printf("Audio clip sample not loaded!\n");
+		exit(1);
+	}
 	
 	draw();
 }
@@ -60,8 +67,10 @@ void Select::logic(ALLEGRO_EVENT ev)
 
 void Select::onClick(int x, int y, ALLEGRO_EVENT ev)
 {
+
 	if (button_continue->isClicked(x, y))
 	{
+		//Presets::print(tiles);
 		ext_code = 2;
 	}
 	else if (button_back->isClicked(x, y))
@@ -69,14 +78,23 @@ void Select::onClick(int x, int y, ALLEGRO_EVENT ev)
 		ext_code = 3;
 	}
 	else {
+		
 		int i = (x - 28) / ((width - 27 - 28) / (float)Select::x);
 		int j = (y - 97) / ((height - 110 - 97) / (float)Select::y);
-		if (find(tiles.begin(), tiles.end(), Tile(i, j, Tile::T_Live)) != tiles.end())
-			tiles.erase(find(tiles.begin(), tiles.end(), Tile(i, j, Tile::T_Live)));
-		else 
-			tiles.emplace_back(i, j, Tile::T_Live);
+		cout << i << " " << j << endl;
+		if (i >= 0 && i < this->x && j >= 0 && j < this->y) {
+			//al_stop_samples();
+			al_play_sample(audio_single, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, 0);
+
+			al_rest(.1);
+			if (find(tiles.begin(), tiles.end(), Tile(i, j, Tile::T_Live)) != tiles.end())
+				tiles.erase(find(tiles.begin(), tiles.end(), Tile(i, j, Tile::T_Live)));
+			else
+				tiles.emplace_back(i, j, Tile::T_Live);
+		}
 		
 	}
+	
 	ev.type = 0;
 	draw();
 }

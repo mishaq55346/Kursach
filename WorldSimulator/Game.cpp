@@ -4,7 +4,7 @@ void Game::init(int x, int y) {
 	mouse_up = true;
 	this->x = x;
 	this->y = y;
-
+	epic_music = false;
 	colors[0] = al_map_rgb(255, 0, 0);//red
 	colors[1] = al_map_rgb(0, 255, 0);//green
 	colors[2] = al_map_rgb(0, 0, 255);//blue
@@ -15,10 +15,19 @@ void Game::init(int x, int y) {
 
 	image = al_load_bitmap("game.png");
 
+	al_reserve_samples(1);
+	audio_full = al_load_sample("full.wav");
+
 	button_back = RoundButton(95, 520, 405, 580);
 	button_main_menu = RoundButton(595, 520, 905, 580);
 
 	stable = false;
+	al_play_sample(audio_full, 1.0, 0.0, 1.1, ALLEGRO_PLAYMODE_LOOP, 0);
+	music_event_queue = al_create_event_queue();
+	music_timer = al_create_timer(14.6);
+	al_register_event_source(music_event_queue, al_get_timer_event_source(music_timer));
+	al_init_timeout(&music_timeout, 0.1);
+	al_start_timer(music_timer);
 }
 
 int Game::randN()
@@ -32,13 +41,23 @@ void Game::draw() {
 	al_draw_bitmap(image, 0, 0, 0);
 	for (const auto tile : tiles)
 	{
-		al_draw_filled_rectangle(
-			28 + tile.x * ((width - 27 - 28) / float(x)),//28 и 97 - поправки для края экрана
-			97 + tile.y * ((height - 110 - 97) / float(y)),
-			28 + (tile.x + 1) * ((width - 27 - 28) / float(x)),
-			97 + (tile.y + 1) * ((height - 110 - 97) / float(y)),
-			tile.color//
-		);
+		if (epic_music) {
+			al_draw_filled_rectangle(
+				28 + tile.x * ((width - 27 - 28) / float(x)),//28 и 97 - поправки для края экрана
+				97 + tile.y * ((height - 110 - 97) / float(y)),
+				28 + (tile.x + 1) * ((width - 27 - 28) / float(x)),
+				97 + (tile.y + 1) * ((height - 110 - 97) / float(y)),
+				colors[abs(randN() % 7)]//
+			);
+		}
+		else
+			al_draw_filled_rectangle(
+				28 + tile.x * ((width - 27 - 28) / float(x)),//28 и 97 - поправки для края экрана
+				97 + tile.y * ((height - 110 - 97) / float(y)),
+				28 + (tile.x + 1) * ((width - 27 - 28) / float(x)),
+				97 + (tile.y + 1) * ((height - 110 - 97) / float(y)),
+				tile.color//
+			);
 	}
 	al_flip_display();
 }
@@ -140,6 +159,13 @@ void Game::logic(ALLEGRO_EVENT ev) {
 				ev.type = 0;
 			}
 		}
+	}
+	if(!epic_music)
+	al_wait_for_event_until(music_event_queue, &music_event, &music_timeout);
+	if (!epic_music && music_event.type == ALLEGRO_EVENT_TIMER) {
+		epic_music = true;
+		music_event.type = 0;
+		al_destroy_timer(music_timer);
 	}
 	if (ev.type == ALLEGRO_EVENT_TIMER)
 		relogic = true;//по тику таймера обновляем картинку
@@ -254,5 +280,7 @@ void Game::onExit()
 	tiles.clear();
 	if(image != nullptr)
 		al_destroy_bitmap(image);
-	
+	music_event.type = 0;
+	al_destroy_sample(audio_full);
+	al_stop_samples();
 }

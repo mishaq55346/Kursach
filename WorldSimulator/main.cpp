@@ -9,28 +9,16 @@
 #include <list>
 #include <vector>
 #include <queue>
+#include "Presets.h"
 
-//#include <vld.h>
-
-
-//правила:
-//если у клетки 2-3 соседей - она сохраняется. иначе смэрть
-//если у любой клетки есть 3 животных рядом - на этой клетке рождается животное
-//0 - пусто
-//1 - есть животное
-//2 - умрет на след ход
-//3 - родится на след ход
-
-
-
-
+//TODO ---сделать окно с выбором пресетов
+//TODO ---сделать поддержку 
 //TODO ---сделать еще одно окно с инструкцией
 //TODO ---в инструкции нарисовать устойчивые фигуры
 
 using namespace std;
 
 void migrate(Select sel, Game *game);
-void migrate(Select *sel, Game *game);
 
 enum GameState { S_Start, S_Menu, S_Select, S_Game, S_Finish };
 GameState State;
@@ -62,7 +50,7 @@ void allegro_init()
 
 	e_queue = al_create_event_queue();
 
-	timer = al_create_timer(0.1);
+	timer = al_create_timer(0.05);
 
 	al_register_event_source(e_queue, al_get_display_event_source(display));
 	al_register_event_source(e_queue, al_get_mouse_event_source());
@@ -138,6 +126,7 @@ int main()
 		}
 		case(S_Select):
 		{
+			sel.tiles = Presets().lots_of_planers;
 			sel.init(menu.x, menu.y);
 			while (sel.ext_code == -1) {
 				al_wait_for_event_until(e_queue, &ev, &timeout);

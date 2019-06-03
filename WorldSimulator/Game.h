@@ -23,7 +23,6 @@ public:
 
 class Game
 {
-private:
 	int x = 10;
 	int y = 10;
 public:
@@ -33,9 +32,15 @@ public:
 	const int width = 1000;
 	const int height = 600;
 
-	
+	ALLEGRO_EVENT music_event;
+	ALLEGRO_EVENT_QUEUE *music_event_queue;
+	ALLEGRO_TIMER *music_timer;
+	ALLEGRO_TIMEOUT music_timeout;
+	bool epic_music = false;
+
 	ALLEGRO_BITMAP *image;
 	ALLEGRO_BITMAP *logo;
+	ALLEGRO_SAMPLE *audio_full;
 	RoundButton button_main_menu;
 	RoundButton button_back;
 
